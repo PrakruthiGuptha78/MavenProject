@@ -1,10 +1,6 @@
 pipeline {
     agent any
     
-    tools {
-        jdk 'jdk11'
-        maven 'maven3'
-    }
     environment {
         CATALINA_HOME='C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0'
     }
@@ -16,7 +12,7 @@ pipeline {
                 bat "mvn clean package -DskipTests"
             }
         }
-        stage('Test') {
+        stage('Testing Stage') {
             steps {
                 bat "mvn test"
             }
@@ -29,14 +25,19 @@ pipeline {
                 
             }
         }
-        stage('Restart Tomcat') {
+         stage('Security Scan') {
             steps {
-                script {
-                    bat "net stop Tomcat9"
-                    bat "net start Tomcat9"
-                }
-                
+                echo 'Running security scans...'
             }
+        }
+        
+    }
+     post {
+        success {
+            echo 'Build and deployment completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
         }
     }
 }
